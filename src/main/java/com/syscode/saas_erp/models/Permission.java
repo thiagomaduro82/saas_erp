@@ -4,9 +4,11 @@ import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
-@Entity(name = "permission")
+@Entity
+@Table(name = "permissions")
 public class Permission extends BaseEntity {
     
     @Column(name = "uuid")

@@ -1,138 +1,149 @@
--- DESCRIBE THE PERMISSIONS TABLE
-CREATE TABLE PERMISSIONS (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    NAME VARCHAR(127) NOT NULL,
-    DESCRIPTION VARCHAR(255) NOT NULL,
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- describe the permissions table
+create table permissions (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   name varchar(127) not null,
+   description varchar(255) not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp
+) ENGINE = innoDB default charset = utf8mb4;
 
--- DESCRIBE THE ROLES TABLE
-CREATE TABLE ROLES (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    NAME VARCHAR(127) NOT NULL,
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
--- DESCRIBE THE ROLE_PERMISSIONS TABLE
-CREATE TABLE ROLE_PERMISSIONS (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    ROLE_ID BIGINT UNSIGNED NOT NULL,
-    PERMISSION_ID BIGINT UNSIGNED NOT NULL,
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT `ROLE_PERMISSIONS_ROLES_FK` FOREIGN KEY (`ROLE_ID`) REFERENCES `ROLES` (`ID`) ON DELETE CASCADE,
-    CONSTRAINT `ROLE_PERMISSIONS_PERMISSIONS_FK` FOREIGN KEY (`PERMISSION_ID`) REFERENCES `PERMISSIONS` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- describe the roles table
+create table roles (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   name varchar(127) not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp
+) ENGINE = innoDB default charset = utf8mb4;
 
--- DESCRIBE THE USERS TABLE
-CREATE TABLE USERS (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    NAME VARCHAR(127) NOT NULL,
-    EMAIL VARCHAR(255) NOT NULL UNIQUE,
-    PASSWORD VARCHAR(255) NOT NULL,
-    ROLE_ID BIGINT UNSIGNED NOT NULL,
-    ACTIVE BOOLEAN,
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT `USERS_ROLES_FK` FOREIGN KEY (`ROLE_ID`) REFERENCES `ROLES` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
--- DESCRIBE THE CONTACT_TYPES TABLE
-CREATE TABLE CONTACT_TYPES (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    NAME VARCHAR(127) NOT NULL,
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- describe the role_permissions table
+create table role_permissions (
+   id bigint unsigned not null primary key auto_increment,
+   role_id bigint unsigned not null,
+   permission_id bigint unsigned not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `role_permissions_roles_fk` foreign key (`role_id`) references `roles` (`id`) on delete cascade,
+   constraint `role_permissions_permissions_fk` foreign key (`permission_id`) references `permissions` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
 
--- DESCRIBE THE COUNTRY TABLE
-CREATE TABLE COUNTRIES (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    NAME VARCHAR(127) NOT NULL,
-    CODE CHAR(2) NOT NULL,
-    CURRENCY CHAR(3) NOT NULL,
-    LOCALE CHAR(5) NOT NULL,
-    STATE_REQUIRED BOOLEAN DEFAULT TRUE, 
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
--- DESCRIBE THE TIMEZONE TABLE
-CREATE TABLE TIMEZONES (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    COUNTRY_ID BIGINT UNSIGNED NOT NULL, 
-    NAME VARCHAR(255) NOT NULL,
-    UTC_OFFSET INTEGER, 
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-    CONSTRAINT `TIMEZONE_COUNTRIES_FK` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `COUNTRIES` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- describe the users table
+create table users (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   name varchar(127) not null,
+   email varchar(255) not null unique,
+   password varchar(255) not null,
+   role_id bigint unsigned not null,
+   active boolean,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `users_roles_fk` foreign key (`role_id`) references `roles` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
 
--- DESCRIBE THE MERCHANTS TABLE
-CREATE TABLE MERCHANTS (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE, 
-    NAME VARCHAR(127) NOT NULL,
-    EMAIL VARCHAR(255) NOT NULL UNIQUE,
-    COUNTRY_ID BIGINT UNSIGNED NOT NULL, 
-    TIMEZONE_ID BIGINT UNSIGNED NOT NULL, 
-    VERIFIED BOOLEAN DEFAULT FALSE, 
-    BLOCKED BOOLEAN DEFAULT FALSE, 
-    ACTIVED BOOLEAN DEFAULT FALSE, 
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-    CONSTRAINT `MERCHANTS_COUNTRIES_FK` FOREIGN KEY (`COUNTRY_ID`) REFERENCES `COUNTRIES` (`ID`), 
-    CONSTRAINT `MERCHANTS_TIMEZONES_FK` FOREIGN KEY (`TIMEZONE_ID`) REFERENCES `TIMEZONES` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
--- DESCRIBE THE MERCHANT_ADDRESSES TABLE
-CREATE TABLE MERCHANT_ADDRESSES (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    MERCHANT_ID BIGINT UNSIGNED NOT NULL,
-    DESCRIPTION VARCHAR(127) NOT NULL, 
-    ADDRESS_1 VARCHAR(127) NOT NULL, 
-    ADDRESS_2 VARCHAR(127), 
-    ADDRESS_3 VARCHAR(127),
-    COUNTY VARCHAR(127) NOT NULL, 
-    CITY VARCHAR(127) NOT NULL, 
-    ZIP_CODE VARCHAR(15) NOT NULL, 
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-    CONSTRAINT `MERCHANT_ADDRESSES_MERCHANTS_FK` FOREIGN KEY (`MERCHANT_ID`) REFERENCES `MERCHANTS` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- describe the contact_types table
+create table contact_types (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   name varchar(127) not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp
+) ENGINE = innoDB default charset = utf8mb4;
 
--- DESCRIBE THE MERCHANT_CONTACTS TABLE
-CREATE TABLE MERCHANT_CONTACTS (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    MERCHANT_ID BIGINT UNSIGNED NOT NULL,
-    CONTACT_TYPE_ID BIGINT UNSIGNED NOT NULL,
-    VALUE VARCHAR(255) NOT NULL, 
-    PERSON_NAME VARCHAR(127) NOT NULL, 
-    DESCRIPTION VARCHAR(127) NOT NULL, 
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-    CONSTRAINT `MERCHANT_CONTACTS_MERCHANTS_FK` FOREIGN KEY (`MERCHANT_ID`) REFERENCES `MERCHANTS` (`ID`), 
-    CONSTRAINT `MERCHANT_CONTACTS_CONTACT_TYPES_FK` FOREIGN KEY (`CONTACT_TYPE_ID`) REFERENCES `CONTACT_TYPES` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
--- DESCRIBE THE MERCHANT_VERIFIED TABLE
-CREATE TABLE MECHANT_VERIFIED (
-    ID BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    UUID CHAR(13) NOT NULL UNIQUE,
-    MERCHANT_ID BIGINT UNSIGNED NOT NULL,
-    TOKEN_GENERATED CHAR(13) NOT NULL, 
-    TOKEN_EXPIRED_AT TIMESTAMP NOT NULL, 
-    CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UPDATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-    CONSTRAINT `MERCHANT_VERIFIED_MERCHANTS_FK` FOREIGN KEY (`MERCHANT_ID`) REFERENCES `MERCHANTS` (`ID`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- describe the country table
+create table countries (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   name varchar(127) not null,
+   code char(2) not null,
+   currency char(3) not null,
+   locale char(5) not null,
+   state_required boolean default true,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp
+) ENGINE = innoDB default charset = utf8mb4;
+
+
+-- describe the timezone table
+create table timezones (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   country_id bigint unsigned not null,
+   name varchar(255) not null,
+   utc_offset integer,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `timezone_countries_fk` foreign key (`country_id`) references `countries` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
+
+
+-- describe the merchants table
+create table merchants (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   name varchar(127) not null,
+   email varchar(255) not null unique,
+   country_id bigint unsigned not null,
+   timezone_id bigint unsigned not null,
+   verified boolean default false,
+   blocked boolean default false,
+   actived boolean default false,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `merchants_countries_fk` foreign key (`country_id`) references `countries` (`id`),
+   constraint `merchants_timezones_fk` foreign key (`timezone_id`) references `timezones` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
+
+
+-- describe the merchant_addresses table
+create table merchant_addresses (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   merchant_id bigint unsigned not null,
+   description varchar(127) not null,
+   address_1 varchar(127) not null,
+   address_2 varchar(127),
+   address_3 varchar(127),
+   county varchar(127) not null,
+   city varchar(127) not null,
+   zip_code varchar(15) not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `merchant_addresses_merchants_fk` foreign key (`merchant_id`) references `merchants` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
+
+
+-- describe the merchant_contacts table
+create table merchant_contacts (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   merchant_id bigint unsigned not null,
+   contact_type_id bigint unsigned not null,
+   value varchar(255) not null,
+   person_name varchar(127) not null,
+   description varchar(127) not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `merchant_contacts_merchants_fk` foreign key (`merchant_id`) references `merchants` (`id`),
+   constraint `merchant_contacts_contact_types_fk` foreign key (`contact_type_id`) references `contact_types` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
+
+
+-- describe the merchant_verified table
+create table mechant_verified (
+   id bigint unsigned not null primary key auto_increment,
+   uuid char(13) not null unique,
+   merchant_id bigint unsigned not null,
+   token_generated char(13) not null,
+   token_expired_at timestamp not null,
+   created_at timestamp not null default current_timestamp,
+   updated_at timestamp not null default current_timestamp on update current_timestamp,
+   constraint `merchant_verified_merchants_fk` foreign key (`merchant_id`) references `merchants` (`id`)
+) ENGINE = innoDB default charset = utf8mb4;
+
