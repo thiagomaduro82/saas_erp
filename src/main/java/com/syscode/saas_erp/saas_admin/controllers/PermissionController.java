@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.syscode.saas_erp.models.Permission;
+import com.syscode.saas_erp.models.mapper.PermissionMapper;
+import com.syscode.saas_erp.models.request.PermissionReqDTO;
 import com.syscode.saas_erp.services.PermissionService;
 import com.syscode.saas_erp.utils.Constant;
 
@@ -57,15 +59,19 @@ public class PermissionController {
 
     @Operation(summary = "Create a new permission")
     @PostMapping
-    public ResponseEntity<Permission> createPermission(@Valid @RequestBody Permission permission) {
+    public ResponseEntity<Permission> createPermission(@Valid @RequestBody PermissionReqDTO permissionDto) {
         log.info("Create permission endpoint called");
+        Permission permission = new Permission();
+        permission = PermissionMapper.INSTANCE.permissionReqDtoToPermission(permissionDto, permission);
         return ResponseEntity.ok().body(permissionService.create(permission));
     }
 
     @Operation(summary = "Update the permission")
     @PutMapping("/{uuid}")
-    public ResponseEntity<Permission> updatePermission(@PathVariable("uuid") String uuid, @Valid @RequestBody Permission permission) {
+    public ResponseEntity<Permission> updatePermission(@PathVariable("uuid") String uuid, @Valid @RequestBody PermissionReqDTO permissionDto) {
         log.info("Update permission endpoint called");
+        Permission permission = new Permission();
+        permission = PermissionMapper.INSTANCE.permissionReqDtoToPermission(permissionDto, permission);
         return ResponseEntity.ok().body(permissionService.update(uuid, permission));
     }
 
