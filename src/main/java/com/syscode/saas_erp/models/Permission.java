@@ -1,11 +1,16 @@
 package com.syscode.saas_erp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.ManyToMany;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "permissions")
@@ -25,14 +30,19 @@ public class Permission extends BaseEntity {
     @NotNull
     private String description;
 
+    @ManyToMany(mappedBy = "permissions")
+    @JsonIgnore
+    private Set<Role> roles = new HashSet<>();
+
     public Permission() {
         super();
     }
 
-    public Permission(String uuid, String name, String description) {
+    public Permission(String uuid, String name, String description, Set<Role> roles) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
+        this.roles = roles;
     }
 
     public String getUuid() {
@@ -59,4 +69,11 @@ public class Permission extends BaseEntity {
         this.description = description;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 }
