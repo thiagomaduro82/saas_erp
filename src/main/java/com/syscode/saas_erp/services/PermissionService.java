@@ -4,10 +4,9 @@ import com.syscode.saas_erp.exceptions.ObjectNotFoundException;
 import com.syscode.saas_erp.models.Permission;
 import com.syscode.saas_erp.repositories.PermissionRepository;
 import com.syscode.saas_erp.utils.GenerateUuids;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PermissionService {
@@ -22,8 +21,8 @@ public class PermissionService {
         return permissionRepository.findByUuid(uuid).orElseThrow(() -> new ObjectNotFoundException("Permission not found - UUID: " + uuid));
     }
 
-    public List<Permission> getAllPermissions(Pageable pageable) {
-        return permissionRepository.findAll(pageable).toList();
+    public Page<Permission> getAllPermissions(Pageable pageable) {
+        return permissionRepository.findAll(pageable);
     }
 
     public Permission create(Permission permission) {

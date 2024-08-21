@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class PermissionController {
 
     @Operation(summary = "Get all permissions")
     @GetMapping
-    public ResponseEntity<List<Permission>> getAllPermissions(Optional<Integer> pageNumber, Optional<Integer> pageSize) {
+    public ResponseEntity<Page<Permission>> getAllPermissions(Optional<Integer> pageNumber, Optional<Integer> pageSize) {
         log.info("Get all permissions endpoint called");
         // Set up pageable variable
         Pageable pageable;
