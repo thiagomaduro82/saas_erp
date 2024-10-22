@@ -115,8 +115,13 @@
 			<classifier>jakarta</classifier>
 			<version>${querydsl.version}</version>
 		</dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-	</dependencies>
+  </dependencies>
 
 	<build>
 		<plugins>

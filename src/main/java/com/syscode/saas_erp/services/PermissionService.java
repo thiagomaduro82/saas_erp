@@ -1,5 +1,6 @@
 package com.syscode.saas_erp.services;
 
+import com.querydsl.core.types.Predicate;
 import com.syscode.saas_erp.exceptions.ObjectNotFoundException;
 import com.syscode.saas_erp.models.Permission;
 import com.syscode.saas_erp.repositories.PermissionRepository;
@@ -21,8 +22,8 @@ public class PermissionService {
         return permissionRepository.findByUuid(uuid).orElseThrow(() -> new ObjectNotFoundException("Permission not found - UUID: " + uuid));
     }
 
-    public Page<Permission> getAllPermissions(Pageable pageable) {
-        return permissionRepository.findAll(pageable);
+    public Page<Permission> getAllPermissions(Predicate predicate, Pageable pageable) {
+        return permissionRepository.findAll(predicate, pageable);
     }
 
     public Permission create(Permission permission) {
