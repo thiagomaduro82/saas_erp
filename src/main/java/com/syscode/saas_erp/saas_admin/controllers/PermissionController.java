@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,14 +51,26 @@ public class PermissionController {
                                                             Optional<String> name,
                                                             Optional<String> description,
                                                             Optional<Integer> pageNumber,
-                                                            Optional<Integer> pageSize) {
+                                                            Optional<Integer> pageSize,
+                                                            Optional<String> sort,
+                                                            Optional<String> order) {
     log.info("Get all permissions endpoint called");
+    // Set up the Sort variable
+    Sort sortRequest = null;
+    if (sort.isPresent() && order.isPresent()) {
+      if (order.get().toLowerCase().equals("asc")) {
+        sortRequest = Sort.by(sort.get()).ascending();
+      } else {
+        sortRequest = Sort.by(sort.get()).descending();
+      }
+    }
+
     // Set up pageable variable
     Pageable pageable;
     if (pageNumber.isPresent() && pageSize.isPresent()) {
-      pageable = PageRequest.of(pageNumber.orElse(Constant.INITIAL_PAGE), pageSize.get());
+      pageable = PageRequest.of(pageNumber.orElse(Constant.INITIAL_PAGE), pageSize.get(), sortRequest);
     } else {
-      pageable = PageRequest.of(Constant.INITIAL_PAGE, Constant.PAGE_SIZE);
+      pageable = PageRequest.of(Constant.INITIAL_PAGE, Constant.PAGE_SIZE, sortRequest);
     }
 
     // Set the predicate

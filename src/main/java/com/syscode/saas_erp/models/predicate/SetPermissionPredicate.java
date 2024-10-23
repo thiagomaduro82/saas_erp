@@ -20,9 +20,9 @@ public class SetPermissionPredicate {
   public BooleanBuilder toPredicate() {
     QPermission qPermission = QPermission.permission;
     BooleanBuilder booleanBuilder = new BooleanBuilder();
-    uuid.ifPresent(val -> booleanBuilder.and(qPermission.uuid.like(val)));
-    name.ifPresent(val -> booleanBuilder.and(qPermission.name.like(val)));
-    description.ifPresent(val -> booleanBuilder.and(qPermission.description.like(val)));
+    uuid.ifPresent(val -> booleanBuilder.and(qPermission.uuid.like("%"+val+"%")));
+    name.ifPresent(val -> booleanBuilder.and(qPermission.name.like("%"+val+"%")));
+    description.ifPresent(val -> booleanBuilder.and(qPermission.description.like("%"+val+"%")));
     return booleanBuilder;
   }
 
